@@ -23,13 +23,13 @@ export default class TmdPlugin extends Plugin {
         async (menu, file, source) => {
           // Добавляем пункт создания tmd-файла
           menu.addItem((item) => {
-            item.setTitle('Создать tmd-файл')
+            item.setTitle('Create tmd file')
               .setIcon('plus-square')
               .onClick(async () => {
                 const folder = file instanceof TFolder ? file : file.parent;
                 if (!folder) {
                   // @ts-ignore
-                  new this.app.Notice('Не удалось определить папку для создания файла');
+                  new this.app.Notice('Could not determine folder for file creation');
                   return;
                 }
                 const now = new Date();
@@ -45,7 +45,7 @@ export default class TmdPlugin extends Plugin {
                   i++;
                 }
                 const filePath = folder.path + '/' + name;
-                const template = '[[Название тренировки]]\n\n### Новое упражнение\n| Вес | Повторы |\n| --- | ------- |\n|     |         |\n';
+                const template = '### Новое упражнение\n| Вес | Повторы |\n| --- | ------- |\n|     |         |\n';
                 const newFile = await this.app.vault.create(filePath, template);
                 const leaf = this.app.workspace.getLeaf(true);
                 // @ts-ignore
@@ -56,13 +56,13 @@ export default class TmdPlugin extends Plugin {
           // Добавляем пункт дублирования md -> tmd
           if (file instanceof TFile && file.extension === 'md') {
             menu.addItem((item) => {
-              item.setTitle('Дублировать (tmd)')
+              item.setTitle('Duplicate as tmd')
                 .setIcon('copy')
                 .onClick(async () => {
                   const folder = file.parent;
                   if (!folder) {
                     // @ts-ignore
-                    new this.app.Notice('Не удалось определить папку для дублирования');
+                    new this.app.Notice('Could not determine folder for duplication');
                     return;
                   }
                   const baseName = file.name.replace(/\.md$/, '');

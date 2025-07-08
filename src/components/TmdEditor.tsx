@@ -161,7 +161,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     });
   };
 
-  // Удалить упражнение
+  // Delete exercise
   const handleDeleteExercise = (idx: number) => {
     setDeleteIdx(idx);
     setShowDeleteDialog(true);
@@ -183,7 +183,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     setDeleteIdx(null);
   };
 
-  // Редактировать название упражнения
+  // Edit exercise name
   const handleEditExercise = (idx: number, currentName: string) => {
     setEditIdx(idx);
     setEditName(currentName);
@@ -218,13 +218,13 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
 
   return (
     <div>
-      {/* Верхняя панель с названием файла и кнопкой редактирования */}
+      {/* Top panel with file name and edit button */}
       {file && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
           <span style={{ fontWeight: 600, fontSize: 20 }}>{file.basename}</span>
           <button
             style={{ color: '#555', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}
-            title="Переименовать файл"
+            title="Rename file"
             onClick={handleShowFileNameDialog}
           >
             ✎
@@ -287,11 +287,11 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
             </tbody>
           </table>
           <button style={{ marginTop: 8 }} onClick={() => handleAddRow(idx)}>
-            + Добавить подход
+            + Add set
           </button>
           <div style={{ marginTop: 8 }}>
             <button onClick={() => handleShowAddExercise(idx)}>
-              + Добавить упражнение
+              + Add exercise
             </button>
           </div>
         </div>
@@ -299,7 +299,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       {showDialog && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 300 }}>
-            <div style={{ marginBottom: 12 }}>Название упражнения:</div>
+            <div style={{ marginBottom: 12 }}>Exercise name:</div>
             <input
               type="text"
               value={newExerciseName}
@@ -308,9 +308,9 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
               autoFocus
             />
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={() => setShowDialog(false)}>Отмена</button>
+              <button onClick={() => setShowDialog(false)}>Cancel</button>
               <button onClick={handleAddExercise} disabled={!newExerciseName.trim()}>
-                Добавить
+                Add
               </button>
             </div>
           </div>
@@ -319,10 +319,10 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       {showDeleteDialog && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 300 }}>
-            <div style={{ marginBottom: 16 }}>Удалить упражнение?</div>
+            <div style={{ marginBottom: 16 }}>Delete exercise?</div>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={cancelDeleteExercise}>Нет</button>
-              <button style={{ color: 'red' }} onClick={confirmDeleteExercise}>Да</button>
+              <button onClick={cancelDeleteExercise}>No</button>
+              <button style={{ color: 'red' }} onClick={confirmDeleteExercise}>Yes</button>
             </div>
           </div>
         </div>
@@ -330,7 +330,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       {showEditDialog && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 300 }}>
-            <div style={{ marginBottom: 12 }}>Новое название упражнения:</div>
+            <div style={{ marginBottom: 12 }}>New exercise name:</div>
             <input
               type="text"
               value={editName}
@@ -339,17 +339,17 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
               autoFocus
             />
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={cancelEditExercise}>Отмена</button>
-              <button onClick={confirmEditExercise} disabled={!editName.trim()}>Сохранить</button>
+              <button onClick={cancelEditExercise}>Cancel</button>
+              <button onClick={confirmEditExercise} disabled={!editName.trim()}>Save</button>
             </div>
           </div>
         </div>
       )}
-      {/* Диалог редактирования имени файла */}
+      {/* File name edit dialog */}
       {showFileNameDialog && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 320 }}>
-            <div style={{ marginBottom: 12 }}>Новое имя файла:</div>
+            <div style={{ marginBottom: 12 }}>New file name:</div>
             <input
               type="text"
               value={fileNameInput}
@@ -365,8 +365,8 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
             </div>
             {fileNameError && <div style={{ color: 'red', marginBottom: 8 }}>{fileNameError}</div>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={handleFileNameCancel}>Отмена</button>
-              <button onClick={handleFileNameSave} disabled={!fileNameInput.trim()}>Сохранить</button>
+              <button onClick={handleFileNameCancel}>Cancel</button>
+              <button onClick={handleFileNameSave} disabled={!fileNameInput.trim()}>Save</button>
             </div>
           </div>
         </div>
