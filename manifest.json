@@ -3,7 +3,7 @@
   "name": "TMD Workout Editor",
   "version": "0.1.0",
   "minAppVersion": "0.15.0",
-  "description": "Плагин для редактирования тренировочных .tmd файлов с кастомным React-интерфейсом.",
+  "description": "Plugin for editing workout .tmd files. You can create and edit workouts, exercises, and sets.",
   "author": "chashkovdanii",
   "authorUrl": "",
   "isDesktopOnly": false
