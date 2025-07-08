@@ -1,7 +1,7 @@
 {
-  "name": "tmd-obsidian-plugin",
+  "name": "tmd-editor",
   "version": "0.1.0",
-  "description": "Obsidian plugin for editing .tmd workout files with React UI.",
+  "description": "Plugin for editing .tmd workout files with React UI.",
   "main": "dist/main.js",
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=dist/main.js --platform=node --external:obsidian --define:process.env.NODE_ENV='\"production\"'",
