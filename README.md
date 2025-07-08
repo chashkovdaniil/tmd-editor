@@ -1,6 +1,6 @@
 # tmd-editor
 
-**A plugin for Obsidian to manage and edit workout .tmd files in a convenient custom interface.**
+**A plugin to manage and edit workout .tmd files in a convenient custom interface.**
 
 ---
 

@@ -1,6 +1,6 @@
 {
-  "id": "tmd-plugin",
-  "name": "TMD Workout Editor",
+  "id": "tmd-editor",
+  "name": "Training markdown editor",
   "version": "0.1.0",
   "minAppVersion": "0.15.0",
   "description": "Plugin for editing workout .tmd files. You can create and edit workouts, exercises, and sets.",
