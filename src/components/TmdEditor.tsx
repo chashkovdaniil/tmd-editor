@@ -177,6 +177,25 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     });
   };
 
+  // Скопировать значения из предыдущей строки (кроме заголовка)
+  const handleCopyPreviousRow = (exerciseIdx: number, rowIdx: number) => {
+    if (rowIdx <= 1) return;
+    setTmd(prev => {
+      setDirty(true);
+      const exercises = [...prev.exercises];
+      const table = exercises[exerciseIdx].table.map(row => [...row]);
+      const prevRow = table[rowIdx - 1];
+      const currentRow = table[rowIdx];
+      if (prevRow && currentRow) {
+        for (let col = 0; col < currentRow.length; col++) {
+          currentRow[col] = prevRow[col] || "";
+        }
+      }
+      exercises[exerciseIdx] = { ...exercises[exerciseIdx], table };
+      return { ...prev, exercises };
+    });
+  };
+
   // Delete exercise
   const handleDeleteExercise = (idx: number) => {
     setDeleteIdx(idx);
@@ -289,6 +308,15 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                   {/* Кнопка удаления подхода (кроме заголовка) */}
                   {rIdx !== 0 && (
                     <td>
+                      {rIdx > 1 && (
+                        <button
+                          style={{ marginLeft: 8 }}
+                          onClick={() => handleCopyPreviousRow(idx, rIdx)}
+                          title="Скопировать предыдущую строку"
+                        >
+                          📋
+                        </button>
+                      )}
                       <button
                         style={{ marginLeft: 8 }}
                         onClick={() => handleClearRow(idx, rIdx)}
