@@ -9,9 +9,11 @@ export const TMD_VIEW_TYPE = "tmd-view";
 export class TmdView extends FileView {
   private tmdFile: TmdFile | null = null;
   private isLoaded: boolean = false;
+  private plugin: any; // TmdPlugin
 
-  constructor(leaf: WorkspaceLeaf) {
+  constructor(leaf: WorkspaceLeaf, plugin: any) {
     super(leaf);
+    this.plugin = plugin;
     console.log("[TMD] TmdView: constructor", leaf);
   }
 
@@ -48,7 +50,9 @@ export class TmdView extends FileView {
       if (this.file) {
         const md = serializeTmd(this.tmdFile);
         await this.app.vault.modify(this.file, md);
-        new Notice("Файл автосохранён");
+        if (this.plugin.settings.showAutoSaveNotification) {
+          new Notice("Файл автосохранён");
+        }
         console.log("[TMD] TmdView: Файл автосохранён", this.file.path);
       }
     };

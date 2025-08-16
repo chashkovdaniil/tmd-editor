@@ -161,6 +161,22 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     });
   };
 
+  // Очистить подход (строку) от текста, не удаляя её
+  const handleClearRow = (exerciseIdx: number, rowIdx: number) => {
+    setTmd(prev => {
+      setDirty(true);
+      const exercises = [...prev.exercises];
+      const table = exercises[exerciseIdx].table.map(row => [...row]);
+      if (table[rowIdx]) {
+        for (let col = 0; col < table[rowIdx].length; col++) {
+          table[rowIdx][col] = "";
+        }
+      }
+      exercises[exerciseIdx] = { ...exercises[exerciseIdx], table };
+      return { ...prev, exercises };
+    });
+  };
+
   // Delete exercise
   const handleDeleteExercise = (idx: number) => {
     setDeleteIdx(idx);
@@ -273,6 +289,13 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                   {/* Кнопка удаления подхода (кроме заголовка) */}
                   {rIdx !== 0 && (
                     <td>
+                      <button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => handleClearRow(idx, rIdx)}
+                        title="Очистить подход"
+                      >
+                        🧹
+                      </button>
                       <button
                         style={{ marginLeft: 8 }}
                         onClick={() => handleRemoveRow(idx, rIdx)}

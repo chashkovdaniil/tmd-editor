@@ -1,16 +1,31 @@
-import { Plugin, WorkspaceLeaf, TFolder, TFile } from "obsidian";
+import { Plugin, WorkspaceLeaf, TFolder, TFile, App, PluginSettingTab, Setting } from "obsidian";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { TmdView, TMD_VIEW_TYPE } from "./TmdView";
 
+interface TmdSettings {
+  showAutoSaveNotification: boolean;
+}
+
+const DEFAULT_SETTINGS: TmdSettings = {
+  showAutoSaveNotification: true
+};
+
 export default class TmdPlugin extends Plugin {
+  settings: TmdSettings = DEFAULT_SETTINGS;
+
   async onload() {
     console.log("[TMD] Плагин загружен");
+    
+    await this.loadSettings();
+    
+    this.addSettingTab(new TmdSettingTab(this.app, this));
+    
     this.registerView(
       TMD_VIEW_TYPE,
       (leaf: WorkspaceLeaf) => {
         console.log(`[TMD] Создаётся кастомный view для leaf`, leaf);
-        return new TmdView(leaf);
+        return new TmdView(leaf, this);
       }
     );
     console.log(`[TMD] Регистрирую расширение .tmd для view: ${TMD_VIEW_TYPE}`);
@@ -90,5 +105,39 @@ export default class TmdPlugin extends Plugin {
   onunload() {
     console.log("[TMD] Плагин выгружен, удаляю кастомные view");
     this.app.workspace.detachLeavesOfType(TMD_VIEW_TYPE);
+  }
+
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  async saveSettings() {
+    await this.saveData(this.settings);
+  }
+}
+
+class TmdSettingTab extends PluginSettingTab {
+  plugin: TmdPlugin;
+
+  constructor(app: App, plugin: TmdPlugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
+
+  display(): void {
+    const { containerEl } = this;
+    containerEl.empty();
+
+    containerEl.createEl("h2", { text: "TMD Editor Settings" });
+
+    new Setting(containerEl)
+      .setName("Показывать уведомление об автосохранении")
+      .setDesc("Включить/выключить уведомление 'Файл автосохранён' при сохранении изменений")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.showAutoSaveNotification)
+        .onChange(async (value) => {
+          this.plugin.settings.showAutoSaveNotification = value;
+          await this.plugin.saveSettings();
+        }));
   }
 } 
