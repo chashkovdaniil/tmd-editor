@@ -410,6 +410,8 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
             />
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               <button type="button" onClick={handleFileNameDate}>{getCurrentDateStr()}</button>
+              <button type="button" onClick={() => handleFileNameEmoji('л')}>л</button>
+              <button type="button" onClick={() => handleFileNameEmoji('т')}>т</button>
               <button type="button" onClick={() => handleFileNameEmoji('🎒')}>🎒</button>
               <button type="button" onClick={() => handleFileNameEmoji('🦵🏼')}>🦵🏼</button>
               <button type="button" onClick={() => handleFileNameEmoji('➡️')}>➡️</button>
@@ -424,4 +426,4 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       )}
     </div>
   );
-}; 
+};
