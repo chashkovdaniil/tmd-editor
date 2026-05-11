@@ -30,6 +30,13 @@ npm run ci:build
 The command runs `scripts/ci-build.sh`, which executes `npm ci` and
 `npm run build`.
 
+GitHub Actions uses the same entrypoint:
+
+- pull requests to `main` run a build check and upload `dist/main.js` plus
+  `dist/manifest.json` as an artifact;
+- pushes to `main` run the build and create a release with the built plugin
+  files attached.
+
 ---
 
 ## Screenshots
