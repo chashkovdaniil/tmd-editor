@@ -18,6 +18,20 @@
 
 ---
 
+## CI build
+
+Use the project CI entrypoint to install dependencies from `package-lock.json`
+and build the plugin:
+
+```bash
+npm run ci:build
+```
+
+The command runs `scripts/ci-build.sh`, which executes `npm ci` and
+`npm run build`.
+
+---
+
 ## Screenshots
 
 - **Main Editor**
