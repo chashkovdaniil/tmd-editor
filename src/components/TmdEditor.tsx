@@ -177,6 +177,20 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     });
   };
 
+  // Очистить только вторую колонку строки подхода
+  const handleClearSecondColumn = (exerciseIdx: number, rowIdx: number) => {
+    setTmd(prev => {
+      setDirty(true);
+      const exercises = [...prev.exercises];
+      const table = exercises[exerciseIdx].table.map(row => [...row]);
+      if (table[rowIdx] && table[rowIdx].length > 1) {
+        table[rowIdx][1] = "";
+      }
+      exercises[exerciseIdx] = { ...exercises[exerciseIdx], table };
+      return { ...prev, exercises };
+    });
+  };
+
   // Скопировать значения из предыдущей строки (кроме заголовка)
   const handleCopyPreviousRow = (exerciseIdx: number, rowIdx: number) => {
     if (rowIdx <= 1) return;
@@ -323,6 +337,13 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                         title="Очистить подход"
                       >
                         🧹
+                      </button>
+                      <button
+                        style={{ marginLeft: 8 }}
+                        onClick={() => handleClearSecondColumn(idx, rIdx)}
+                        title="Очистить вторую колонку"
+                      >
+                        2
                       </button>
                       <button
                         style={{ marginLeft: 8 }}
