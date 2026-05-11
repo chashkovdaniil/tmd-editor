@@ -34,8 +34,9 @@ GitHub Actions uses the same entrypoint:
 
 - pull requests to `main` run a build check and upload `dist/main.js` plus
   `dist/manifest.json` as an artifact;
-- pushes to `main` run the build and create a release with the built plugin
-  files attached.
+- pushes to `main` bump the patch version in `manifest.json`, `package.json`,
+  and `package-lock.json`, then build and create a release with the built
+  plugin files attached.
 
 ---
 

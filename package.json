@@ -6,6 +6,7 @@
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=dist/main.js --platform=node --external:obsidian --define:process.env.NODE_ENV='\"production\"'",
     "ci:build": "bash ./scripts/ci-build.sh",
+    "version:bump": "node ./scripts/bump-version.mjs",
     "postbuild": "cp manifest.json dist/manifest.json"
   },
   "devDependencies": {
