@@ -343,7 +343,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                         onClick={() => handleClearSecondColumn(idx, rIdx)}
                         title="Очистить вторую колонку"
                       >
-                        2
+                        🧽
                       </button>
                       <button
                         style={{ marginLeft: 8 }}
