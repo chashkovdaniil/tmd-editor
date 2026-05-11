@@ -42,7 +42,7 @@ jobs:
   release:
     name: Create release
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -50,6 +50,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -57,21 +59,32 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Bump extension version
+        run: npm run version:bump -- patch
+
       - name: Install dependencies and build
         run: npm run ci:build
+
+      - name: Commit bumped version
+        run: |
+          version="$(node -p "require('./manifest.json').version")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest.json package.json package-lock.json
+          git commit -m "chore(release): bump version to v${version} [skip ci]"
+          git push origin HEAD:main
 
       - name: Prepare release metadata
         id: metadata
         run: |
           version="$(node -p "require('./manifest.json').version")"
-          short_sha="${GITHUB_SHA::7}"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=${short_sha}" >> "$GITHUB_OUTPUT"
-          echo "tag=v${version}-${short_sha}" >> "$GITHUB_OUTPUT"
+          echo "release_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
 
       - name: Create plugin archive
         run: |
-          archive="tmd-editor-${{ steps.metadata.outputs.version }}-${{ steps.metadata.outputs.short_sha }}.zip"
+          archive="tmd-editor-${{ steps.metadata.outputs.version }}.zip"
           (cd dist && zip -r "../${archive}" main.js manifest.json)
           echo "PLUGIN_ARCHIVE=${archive}" >> "$GITHUB_ENV"
 
@@ -79,8 +92,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.metadata.outputs.tag }}
-          name: tmd-editor ${{ steps.metadata.outputs.version }} (${{ steps.metadata.outputs.short_sha }})
-          target_commitish: ${{ github.sha }}
+          name: tmd-editor ${{ steps.metadata.outputs.version }}
+          target_commitish: ${{ steps.metadata.outputs.release_sha }}
           generate_release_notes: true
           files: |
             dist/main.js

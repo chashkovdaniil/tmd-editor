@@ -24,6 +24,8 @@
 - `.github/workflows/ci.yml` - GitHub Actions: build на PR и release на push
   в `main`.
 - `dist/` - результат сборки; создается командой `npm run build`.
+- `scripts/bump-version.mjs` - поднимает версию в `manifest.json`,
+  `package.json` и `package-lock.json`.
 - `Instruction.md`, `Startup.md`, `memorybank.md` - проектный контекст и
   заметки по запуску.
 
@@ -32,8 +34,10 @@
 - Установка зависимостей: `npm ci`.
 - Сборка и проверка TypeScript/esbuild: `npm run build`.
 - CI-сборка для автоматизации: `npm run ci:build`.
+- Поднять patch-версию расширения: `npm run version:bump -- patch`.
 - GitHub Actions использует `npm run ci:build`; релиз создается после push в
-  `main` с артефактами `dist/main.js`, `dist/manifest.json` и zip-архивом.
+  `main` после автоподнятия patch-версии с артефактами `dist/main.js`,
+  `dist/manifest.json` и zip-архивом.
 - Отдельных тестов или lint-скриптов в `package.json` нет.
 
 ## Важные паттерны
