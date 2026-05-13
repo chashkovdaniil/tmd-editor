@@ -40,7 +40,15 @@ export class TmdView extends FileView {
     console.log("[TMD] TmdView: renderEditor", this.isLoaded, this.tmdFile);
     if (!this.isLoaded || !this.tmdFile) {
       ReactDOM.render(
-        <div style={{ padding: 32, textAlign: "center" }}>Загрузка...</div>,
+        <div
+          style={{
+            padding: 32,
+            color: "var(--text-muted)",
+            textAlign: "center",
+          }}
+        >
+          Загрузка...
+        </div>,
         this.containerEl.children[1]
       );
       return;
@@ -74,4 +82,4 @@ export class TmdView extends FileView {
     console.log("[TMD] TmdView: onClose");
     ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
   }
-} 
+}
