@@ -50,6 +50,12 @@
 - `TmdView` отвечает за работу с Obsidian vault и уведомления, а `TmdEditor`
   должен оставаться UI-компонентом, принимающим `tmd`, `file`, `app` и `refTmd`.
 - Для файлового меню и настроек используйте API Obsidian в `src/main.ts`.
+- Для иконок в кнопках React UI используйте API Obsidian: импортируйте
+  `setIcon` и `IconName` из `obsidian`, рендерите локальный компонент с
+  `ref` на DOM-элемент и вызывайте `setIcon(ref.current, "lucide-icon-name")`.
+  Используйте имена из встроенной lucide-библиотеки Obsidian (`copy`,
+  `pencil`, `trash-2`, `eraser` и т.п.); не заменяйте кнопочные иконки
+  эмодзи или текстовыми символами.
 
 ## Проверка изменений
 
