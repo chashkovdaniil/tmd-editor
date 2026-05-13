@@ -135,12 +135,22 @@ const editorStyles: Record<string, React.CSSProperties> = {
   tableHeaderCell: {
     padding: "10px 8px",
     borderBottom: "1px solid var(--background-modifier-border)",
-    background: "var(--background-secondary)",
     color: "var(--text-muted)",
     fontSize: 12,
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
+  },
+  setNumberCell: {
+    width: 1,
+    padding: "8px 10px",
+    borderBottom: "1px solid var(--background-modifier-border)",
+    color: "var(--text-muted)",
+    fontSize: 12,
+    fontWeight: 700,
+    textAlign: "center",
+    verticalAlign: "middle",
+    whiteSpace: "nowrap",
   },
   tableInput: {
     width: "100%",
@@ -640,7 +650,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                   variant="danger"
                   onClick={() => handleDeleteExercise(idx)}
                 >
-                  🗑️
+                  <ObsidianIcon icon="trash-2" />
                 </EditorButton>
               </div>
             </div>
@@ -648,87 +658,98 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
             <div style={editorStyles.tableWrap}>
               <table style={editorStyles.table}>
                 <tbody>
-                {ex.table.map((row, rIdx) => {
-                  const isLastRow = rIdx === ex.table.length - 1;
-                  const borderBottom = isLastRow
-                    ? "none"
-                    : "1px solid var(--background-modifier-border)";
-                  const cellStyle = {
-                    ...(rIdx === 0 ? editorStyles.tableHeaderCell : editorStyles.tableCell),
-                    borderBottom,
-                  };
-                  const actionsCellStyle = {
-                    ...editorStyles.rowActionsCell,
-                    borderBottom,
-                  };
+                  {ex.table.map((row, rIdx) => {
+                    const isLastRow = rIdx === ex.table.length - 1;
+                    const borderBottom = isLastRow
+                      ? "none"
+                      : "1px solid var(--background-modifier-border)";
+                    const cellStyle = {
+                      ...(rIdx === 0 ? editorStyles.tableHeaderCell : editorStyles.tableCell),
+                      borderBottom,
+                    };
+                    const actionsCellStyle = {
+                      ...editorStyles.rowActionsCell,
+                      borderBottom,
+                    };
+                    const setNumberCellStyle = {
+                      ...editorStyles.setNumberCell,
+                      borderBottom,
+                    };
 
-                  return (
-                    <tr key={rIdx}>
-                      {row.map((cell, cIdx) => (
-                        <td
-                          key={cIdx}
-                          style={cellStyle}
-                        >
-                          {rIdx === 0 ? (
-                            cell
-                          ) : (
-                            <input
-                              type="text"
-                              value={cell}
-                              onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
-                              style={editorStyles.tableInput}
-                            />
-                          )}
+                    return (
+                      <tr key={rIdx}>
+                        <td style={setNumberCellStyle}>
+                          {rIdx === 0 ? "#" : rIdx}
                         </td>
-                      ))}
-                      {rIdx !== 0 && (
-                        <td style={actionsCellStyle}>
-                          <div style={editorStyles.rowActions}>
-                            {rIdx > 1 && (
+                        {row.map((cell, cIdx) => (
+                          <td
+                            key={cIdx}
+                            style={cellStyle}
+                          >
+                            {rIdx === 0 ? (
+                              cell
+                            ) : (
+                              <input
+                                type="text"
+                                value={cell}
+                                onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
+                                style={editorStyles.tableInput}
+                              />
+                            )}
+                          </td>
+                        ))}
+                        {rIdx !== 0 && (
+                          <td style={actionsCellStyle}>
+                            <div style={editorStyles.rowActions}>
+                              {rIdx > 1 && (
+                                <EditorButton
+                                  compact
+                                  onClick={() => handleCopyPreviousRow(idx, rIdx)}
+                                  title="Скопировать предыдущую строку"
+                                  variant="ghost"
+                                >
+                                  <ObsidianIcon icon="copy" />
+                                </EditorButton>
+                              )}
                               <EditorButton
                                 compact
-                                onClick={() => handleCopyPreviousRow(idx, rIdx)}
-                                title="Скопировать предыдущую строку"
+                                onClick={() => handleClearRow(idx, rIdx)}
+                                title="Очистить подход"
                                 variant="ghost"
                               >
-                                <ObsidianIcon icon="copy" />
+                                🧹
                               </EditorButton>
-                            )}
-                            <EditorButton
-                              compact
-                              onClick={() => handleClearRow(idx, rIdx)}
-                              title="Очистить подход"
-                              variant="ghost"
-                            >
-                              🧹
-                            </EditorButton>
-                            <EditorButton
-                              compact
-                              onClick={() => handleClearSecondColumn(idx, rIdx)}
-                              title="Очистить вторую колонку"
-                              variant="ghost"
-                            >
-                              🧽
-                            </EditorButton>
-                            <EditorButton
-                              compact
-                              onClick={() => handleRemoveRow(idx, rIdx)}
-                              title="Удалить подход"
-                              variant="danger"
-                            >
-                              ×
-                            </EditorButton>
-                          </div>
-                        </td>
-                      )}
-                    </tr>
-                  );
-                })}
+                              <EditorButton
+                                compact
+                                onClick={() => handleClearSecondColumn(idx, rIdx)}
+                                title="Очистить вторую колонку"
+                                variant="ghost"
+                              >
+                                🧽
+                              </EditorButton>
+                              <EditorButton
+                                compact
+                                onClick={() => handleRemoveRow(idx, rIdx)}
+                                title="Удалить подход"
+                                variant="danger"
+                              >
+                                ×
+                              </EditorButton>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
             <div style={editorStyles.exerciseFooter}>
-              <EditorButton variant="primary" onClick={() => handleAddRow(idx)}>
+              <EditorButton
+                onClick={() => handleAddRow(idx)}
+                style={{ width: "100%" }}
+                variant="primary"
+              >
                 + Подход
               </EditorButton>
             </div>
