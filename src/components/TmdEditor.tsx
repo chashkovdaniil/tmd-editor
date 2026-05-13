@@ -642,7 +642,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                   variant="ghost"
                   onClick={() => handleEditExercise(idx, ex.name)}
                 >
-                  ✎
+                  <ObsidianIcon icon="pencil" />
                 </EditorButton>
                 <EditorButton
                   compact
@@ -701,23 +701,22 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                         {rIdx !== 0 && (
                           <td style={actionsCellStyle}>
                             <div style={editorStyles.rowActions}>
-                              {rIdx > 1 && (
-                                <EditorButton
-                                  compact
-                                  onClick={() => handleCopyPreviousRow(idx, rIdx)}
-                                  title="Скопировать предыдущую строку"
-                                  variant="ghost"
-                                >
-                                  <ObsidianIcon icon="copy" />
-                                </EditorButton>
-                              )}
+                              <EditorButton
+                                compact
+                                disabled={rIdx <= 1}
+                                onClick={() => handleCopyPreviousRow(idx, rIdx)}
+                                title="Скопировать предыдущую строку"
+                                variant="ghost"
+                              >
+                                <ObsidianIcon icon="copy" />
+                              </EditorButton>
                               <EditorButton
                                 compact
                                 onClick={() => handleClearRow(idx, rIdx)}
                                 title="Очистить подход"
                                 variant="ghost"
                               >
-                                🧹
+                                <ObsidianIcon icon="eraser" />
                               </EditorButton>
                               <EditorButton
                                 compact
@@ -725,7 +724,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                                 title="Очистить вторую колонку"
                                 variant="ghost"
                               >
-                                🧽
+                                <ObsidianIcon icon="delete" />
                               </EditorButton>
                               <EditorButton
                                 compact
@@ -733,7 +732,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                                 title="Удалить подход"
                                 variant="danger"
                               >
-                                ×
+                                <ObsidianIcon icon="trash-2" />
                               </EditorButton>
                             </div>
                           </td>
