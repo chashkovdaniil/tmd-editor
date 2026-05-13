@@ -13,9 +13,9 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 const editorStyles: Record<string, React.CSSProperties> = {
   page: {
-    maxWidth: 980,
-    margin: "0 auto",
-    padding: "24px 28px 40px",
+    width: "100%",
+    margin: 0,
+    padding: 0,
     color: "var(--text-normal)",
   },
   topPanel: {
@@ -23,7 +23,7 @@ const editorStyles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "space-between",
     gap: 16,
-    marginBottom: 20,
+    marginBottom: 12,
     padding: "16px 18px",
     border: "1px solid var(--background-modifier-border)",
     borderRadius: 14,
@@ -53,7 +53,7 @@ const editorStyles: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap",
   },
   workoutTitleCard: {
-    marginBottom: 20,
+    marginBottom: 12,
     padding: "18px 20px",
     border: "1px solid var(--background-modifier-border)",
     borderRadius: 16,
@@ -65,7 +65,7 @@ const editorStyles: Record<string, React.CSSProperties> = {
     lineHeight: 1.2,
   },
   exerciseCard: {
-    marginBottom: 22,
+    margin: "0 0 12px",
     padding: 18,
     border: "1px solid var(--background-modifier-border)",
     borderRadius: 16,
