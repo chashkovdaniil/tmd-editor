@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TmdFile, TmdExercise } from "../TmdParser";
-import { App, TFile } from "obsidian";
+import { App, IconName, setIcon, TFile } from "obsidian";
 
 interface TmdEditorProps {
   tmd: TmdFile;
@@ -9,7 +9,7 @@ interface TmdEditorProps {
   app?: App;
 }
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "dashed";
 
 const editorStyles: Record<string, React.CSSProperties> = {
   page: {
@@ -121,9 +121,6 @@ const editorStyles: Record<string, React.CSSProperties> = {
   },
   tableWrap: {
     overflowX: "auto",
-    border: "1px solid var(--background-modifier-border)",
-    borderRadius: 12,
-    background: "var(--background-primary)",
   },
   table: {
     width: "100%",
@@ -170,6 +167,10 @@ const editorStyles: Record<string, React.CSSProperties> = {
     flexWrap: "wrap",
     gap: 10,
     marginTop: 14,
+  },
+  addExerciseBetween: {
+    display: "flex",
+    margin: "-2px 0 12px",
   },
   modalOverlay: {
     position: "fixed",
@@ -271,6 +272,12 @@ const buttonVariantStyles: Record<ButtonVariant, React.CSSProperties> = {
     background: "transparent",
     color: "var(--text-error)",
   },
+  dashed: {
+    borderColor: "var(--interactive-accent)",
+    borderStyle: "dashed",
+    background: "transparent",
+    color: "var(--interactive-accent)",
+  },
 };
 
 interface EditorButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -297,6 +304,23 @@ const EditorButton: React.FC<EditorButtonProps> = ({
     }}
   />
 );
+
+interface ObsidianIconProps {
+  icon: IconName;
+}
+
+const ObsidianIcon: React.FC<ObsidianIconProps> = ({ icon }) => {
+  const iconRef = React.useRef<HTMLSpanElement>(null);
+
+  React.useEffect(() => {
+    if (iconRef.current) {
+      iconRef.current.textContent = "";
+      setIcon(iconRef.current, icon);
+    }
+  }, [icon]);
+
+  return <span ref={iconRef} aria-hidden="true" />;
+};
 
 interface EditorModalProps {
   actions: React.ReactNode;
@@ -594,108 +618,131 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
         </div>
       )}
       {tmd.exercises.map((ex, idx) => (
-        <section key={idx} style={editorStyles.exerciseCard}>
-          <div style={editorStyles.exerciseHeader}>
-            <div style={editorStyles.exerciseTitleRow}>
-              <span style={editorStyles.exerciseBadge}>{idx + 1}</span>
-              <h3 style={editorStyles.exerciseName}>{ex.name}</h3>
+        <React.Fragment key={idx}>
+          <section style={editorStyles.exerciseCard}>
+            <div style={editorStyles.exerciseHeader}>
+              <div style={editorStyles.exerciseTitleRow}>
+                <span style={editorStyles.exerciseBadge}>{idx + 1}</span>
+                <h3 style={editorStyles.exerciseName}>{ex.name}</h3>
+              </div>
+              <div style={editorStyles.headerActions}>
+                <EditorButton
+                  compact
+                  title="Редактировать название"
+                  variant="ghost"
+                  onClick={() => handleEditExercise(idx, ex.name)}
+                >
+                  ✎
+                </EditorButton>
+                <EditorButton
+                  compact
+                  title="Удалить упражнение"
+                  variant="danger"
+                  onClick={() => handleDeleteExercise(idx)}
+                >
+                  🗑️
+                </EditorButton>
+              </div>
             </div>
-            <div style={editorStyles.headerActions}>
-              <EditorButton
-                compact
-                title="Редактировать название"
-                variant="ghost"
-                onClick={() => handleEditExercise(idx, ex.name)}
-              >
-                ✎
-              </EditorButton>
-              <EditorButton
-                compact
-                title="Удалить упражнение"
-                variant="danger"
-                onClick={() => handleDeleteExercise(idx)}
-              >
-                🗑️
-              </EditorButton>
-            </div>
-          </div>
-          {ex.note && <div style={editorStyles.note}>{ex.note}</div>}
-          <div style={editorStyles.tableWrap}>
-            <table style={editorStyles.table}>
-              <tbody>
-                {ex.table.map((row, rIdx) => (
-                  <tr key={rIdx}>
-                    {row.map((cell, cIdx) => (
-                      <td
-                        key={cIdx}
-                        style={rIdx === 0 ? editorStyles.tableHeaderCell : editorStyles.tableCell}
-                      >
-                        {rIdx === 0 ? (
-                          cell
-                        ) : (
-                          <input
-                            type="text"
-                            value={cell}
-                            onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
-                            style={editorStyles.tableInput}
-                          />
-                        )}
-                      </td>
-                    ))}
-                    {rIdx !== 0 && (
-                      <td style={editorStyles.rowActionsCell}>
-                        <div style={editorStyles.rowActions}>
-                          {rIdx > 1 && (
+            {ex.note && <div style={editorStyles.note}>{ex.note}</div>}
+            <div style={editorStyles.tableWrap}>
+              <table style={editorStyles.table}>
+                <tbody>
+                {ex.table.map((row, rIdx) => {
+                  const isLastRow = rIdx === ex.table.length - 1;
+                  const borderBottom = isLastRow
+                    ? "none"
+                    : "1px solid var(--background-modifier-border)";
+                  const cellStyle = {
+                    ...(rIdx === 0 ? editorStyles.tableHeaderCell : editorStyles.tableCell),
+                    borderBottom,
+                  };
+                  const actionsCellStyle = {
+                    ...editorStyles.rowActionsCell,
+                    borderBottom,
+                  };
+
+                  return (
+                    <tr key={rIdx}>
+                      {row.map((cell, cIdx) => (
+                        <td
+                          key={cIdx}
+                          style={cellStyle}
+                        >
+                          {rIdx === 0 ? (
+                            cell
+                          ) : (
+                            <input
+                              type="text"
+                              value={cell}
+                              onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
+                              style={editorStyles.tableInput}
+                            />
+                          )}
+                        </td>
+                      ))}
+                      {rIdx !== 0 && (
+                        <td style={actionsCellStyle}>
+                          <div style={editorStyles.rowActions}>
+                            {rIdx > 1 && (
+                              <EditorButton
+                                compact
+                                onClick={() => handleCopyPreviousRow(idx, rIdx)}
+                                title="Скопировать предыдущую строку"
+                                variant="ghost"
+                              >
+                                <ObsidianIcon icon="copy" />
+                              </EditorButton>
+                            )}
                             <EditorButton
                               compact
-                              onClick={() => handleCopyPreviousRow(idx, rIdx)}
-                              title="Скопировать предыдущую строку"
+                              onClick={() => handleClearRow(idx, rIdx)}
+                              title="Очистить подход"
                               variant="ghost"
                             >
-                              📋
+                              🧹
                             </EditorButton>
-                          )}
-                          <EditorButton
-                            compact
-                            onClick={() => handleClearRow(idx, rIdx)}
-                            title="Очистить подход"
-                            variant="ghost"
-                          >
-                            🧹
-                          </EditorButton>
-                          <EditorButton
-                            compact
-                            onClick={() => handleClearSecondColumn(idx, rIdx)}
-                            title="Очистить вторую колонку"
-                            variant="ghost"
-                          >
-                            🧽
-                          </EditorButton>
-                          <EditorButton
-                            compact
-                            onClick={() => handleRemoveRow(idx, rIdx)}
-                            title="Удалить подход"
-                            variant="danger"
-                          >
-                            ×
-                          </EditorButton>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div style={editorStyles.exerciseFooter}>
-            <EditorButton variant="primary" onClick={() => handleAddRow(idx)}>
-              + Добавить подход
+                            <EditorButton
+                              compact
+                              onClick={() => handleClearSecondColumn(idx, rIdx)}
+                              title="Очистить вторую колонку"
+                              variant="ghost"
+                            >
+                              🧽
+                            </EditorButton>
+                            <EditorButton
+                              compact
+                              onClick={() => handleRemoveRow(idx, rIdx)}
+                              title="Удалить подход"
+                              variant="danger"
+                            >
+                              ×
+                            </EditorButton>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
+                </tbody>
+              </table>
+            </div>
+            <div style={editorStyles.exerciseFooter}>
+              <EditorButton variant="primary" onClick={() => handleAddRow(idx)}>
+                + Подход
+              </EditorButton>
+            </div>
+          </section>
+          <div style={editorStyles.addExerciseBetween}>
+            <EditorButton
+              onClick={() => handleShowAddExercise(idx)}
+              style={{ width: "100%" }}
+              variant="dashed"
+            >
+              + Упражнение
             </EditorButton>
-            <EditorButton onClick={() => handleShowAddExercise(idx)}>
-              + Добавить упражнение
-            </EditorButton>
           </div>
-        </section>
+        </React.Fragment>
       ))}
       {showDialog && (
         <EditorModal
