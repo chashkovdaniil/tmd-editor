@@ -615,7 +615,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                 variant="danger"
                 onClick={() => handleDeleteExercise(idx)}
               >
-                ×
+                🗑️
               </EditorButton>
             </div>
           </div>
