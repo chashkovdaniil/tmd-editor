@@ -9,6 +9,311 @@ interface TmdEditorProps {
   app?: App;
 }
 
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+
+const editorStyles: Record<string, React.CSSProperties> = {
+  page: {
+    maxWidth: 980,
+    margin: "0 auto",
+    padding: "24px 28px 40px",
+    color: "var(--text-normal)",
+  },
+  topPanel: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+    marginBottom: 20,
+    padding: "16px 18px",
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 14,
+    background: "var(--background-secondary)",
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
+  },
+  fileInfo: {
+    minWidth: 0,
+  },
+  overline: {
+    display: "block",
+    marginBottom: 4,
+    color: "var(--text-muted)",
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+  },
+  fileName: {
+    display: "block",
+    overflow: "hidden",
+    color: "var(--text-normal)",
+    fontSize: 22,
+    fontWeight: 700,
+    lineHeight: 1.2,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  workoutTitleCard: {
+    marginBottom: 20,
+    padding: "18px 20px",
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 16,
+    background: "linear-gradient(135deg, var(--background-secondary), var(--background-primary))",
+  },
+  workoutTitle: {
+    margin: 0,
+    fontSize: 28,
+    lineHeight: 1.2,
+  },
+  exerciseCard: {
+    marginBottom: 22,
+    padding: 18,
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 16,
+    background: "var(--background-primary)",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.06)",
+  },
+  exerciseHeader: {
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 16,
+    marginBottom: 14,
+  },
+  exerciseTitleRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    minWidth: 0,
+  },
+  exerciseBadge: {
+    display: "inline-flex",
+    flex: "0 0 auto",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 30,
+    height: 30,
+    borderRadius: 999,
+    background: "var(--interactive-accent)",
+    color: "var(--text-on-accent)",
+    fontSize: 13,
+    fontWeight: 700,
+  },
+  exerciseName: {
+    margin: 0,
+    overflow: "hidden",
+    fontSize: 21,
+    lineHeight: 1.25,
+    textOverflow: "ellipsis",
+  },
+  headerActions: {
+    display: "flex",
+    flex: "0 0 auto",
+    gap: 8,
+  },
+  note: {
+    marginBottom: 14,
+    padding: "10px 12px",
+    borderLeft: "3px solid var(--interactive-accent)",
+    borderRadius: 8,
+    background: "var(--background-secondary)",
+    color: "var(--text-muted)",
+    fontStyle: "italic",
+  },
+  tableWrap: {
+    overflowX: "auto",
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 12,
+    background: "var(--background-primary)",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: 0,
+  },
+  tableCell: {
+    padding: 8,
+    borderBottom: "1px solid var(--background-modifier-border)",
+    verticalAlign: "middle",
+  },
+  tableHeaderCell: {
+    padding: "10px 8px",
+    borderBottom: "1px solid var(--background-modifier-border)",
+    background: "var(--background-secondary)",
+    color: "var(--text-muted)",
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+  },
+  tableInput: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "8px 10px",
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 8,
+    background: "var(--background-primary)",
+    color: "var(--text-normal)",
+    outline: "none",
+  },
+  rowActionsCell: {
+    width: 1,
+    padding: "6px 8px",
+    borderBottom: "1px solid var(--background-modifier-border)",
+    whiteSpace: "nowrap",
+  },
+  rowActions: {
+    display: "flex",
+    gap: 6,
+  },
+  exerciseFooter: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 14,
+  },
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    boxSizing: "border-box",
+    background: "rgba(0, 0, 0, 0.45)",
+    zIndex: 1000,
+  },
+  modal: {
+    width: "100%",
+    maxWidth: 420,
+    padding: 22,
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 16,
+    background: "var(--background-primary)",
+    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.28)",
+  },
+  modalTitle: {
+    marginBottom: 14,
+    fontSize: 18,
+    fontWeight: 700,
+  },
+  modalInput: {
+    width: "100%",
+    boxSizing: "border-box",
+    marginBottom: 14,
+    padding: "10px 12px",
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 10,
+    background: "var(--background-primary)",
+    color: "var(--text-normal)",
+    outline: "none",
+  },
+  modalActions: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: 8,
+  },
+  quickActions: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 14,
+  },
+  error: {
+    marginBottom: 10,
+    color: "var(--text-error)",
+  },
+};
+
+const buttonBaseStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 34,
+  padding: "7px 12px",
+  border: "1px solid var(--background-modifier-border)",
+  borderRadius: 10,
+  background: "var(--background-secondary)",
+  color: "var(--text-normal)",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: 600,
+  lineHeight: 1.2,
+};
+
+const compactButtonStyle: React.CSSProperties = {
+  width: 32,
+  minHeight: 32,
+  padding: 0,
+};
+
+const disabledButtonStyle: React.CSSProperties = {
+  cursor: "not-allowed",
+  opacity: 0.5,
+};
+
+const buttonVariantStyles: Record<ButtonVariant, React.CSSProperties> = {
+  primary: {
+    borderColor: "var(--interactive-accent)",
+    background: "var(--interactive-accent)",
+    color: "var(--text-on-accent)",
+  },
+  secondary: {},
+  ghost: {
+    borderColor: "transparent",
+    background: "transparent",
+    color: "var(--text-muted)",
+  },
+  danger: {
+    borderColor: "var(--text-error)",
+    background: "transparent",
+    color: "var(--text-error)",
+  },
+};
+
+interface EditorButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  compact?: boolean;
+  variant?: ButtonVariant;
+}
+
+const EditorButton: React.FC<EditorButtonProps> = ({
+  compact = false,
+  disabled = false,
+  style,
+  variant = "secondary",
+  ...buttonProps
+}) => (
+  <button
+    {...buttonProps}
+    disabled={disabled}
+    style={{
+      ...buttonBaseStyle,
+      ...buttonVariantStyles[variant],
+      ...(compact ? compactButtonStyle : {}),
+      ...(disabled ? disabledButtonStyle : {}),
+      ...style,
+    }}
+  />
+);
+
+interface EditorModalProps {
+  actions: React.ReactNode;
+  children?: React.ReactNode;
+  title: string;
+}
+
+const EditorModal: React.FC<EditorModalProps> = ({ actions, children, title }) => (
+  <div style={editorStyles.modalOverlay}>
+    <div style={editorStyles.modal}>
+      <div style={editorStyles.modalTitle}>{title}</div>
+      {children}
+      <div style={editorStyles.modalActions}>{actions}</div>
+    </div>
+  </div>
+);
+
 export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, file, app }) => {
   const [tmd, setTmd] = React.useState<TmdFile>(initialTmd);
   const [dirty, setDirty] = React.useState(false);
@@ -266,184 +571,243 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
   }, []);
 
   return (
-    <div>
-      {/* Top panel with file name and edit button */}
+    <div style={editorStyles.page}>
       {file && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
-          <span style={{ fontWeight: 600, fontSize: 20 }}>{file.basename}</span>
-          <button
-            style={{ color: '#555', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}
-            title="Rename file"
+        <div style={editorStyles.topPanel}>
+          <div style={editorStyles.fileInfo}>
+            <span style={editorStyles.overline}>Файл тренировки</span>
+            <span style={editorStyles.fileName}>{file.basename}</span>
+          </div>
+          <EditorButton
+            title="Переименовать файл"
+            variant="secondary"
             onClick={handleShowFileNameDialog}
           >
-            ✎
-          </button>
+            Переименовать
+          </EditorButton>
         </div>
       )}
-      {tmd.title && <h2>{tmd.title}</h2>}
-      {tmd.exercises.map((ex, idx) => (
-        <div key={idx} style={{ marginBottom: 32 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <h3 style={{ margin: 0 }}>{ex.name}</h3>
-            <button
-              style={{ color: '#555', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}
-              title="Редактировать название"
-              onClick={() => handleEditExercise(idx, ex.name)}
-            >
-              ✎
-            </button>
-            <button
-              style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
-              title="Удалить упражнение"
-              onClick={() => handleDeleteExercise(idx)}
-            >
-              ×
-            </button>
-          </div>
-          {ex.note && <div style={{ fontStyle: "italic", marginBottom: 8 }}>{ex.note}</div>}
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <tbody>
-              {ex.table.map((row, rIdx) => (
-                <tr key={rIdx}>
-                  {row.map((cell, cIdx) => (
-                    <td key={cIdx} style={{ border: "1px solid #ccc", padding: 4 }}>
-                      {rIdx === 0 ? (
-                        <b>{cell}</b>
-                      ) : (
-                        <input
-                          type="text"
-                          value={cell}
-                          onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
-                          style={{ width: "100%", boxSizing: "border-box" }}
-                        />
-                      )}
-                    </td>
-                  ))}
-                  {/* Кнопка удаления подхода (кроме заголовка) */}
-                  {rIdx !== 0 && (
-                    <td>
-                      {rIdx > 1 && (
-                        <button
-                          style={{ marginLeft: 8 }}
-                          onClick={() => handleCopyPreviousRow(idx, rIdx)}
-                          title="Скопировать предыдущую строку"
-                        >
-                          📋
-                        </button>
-                      )}
-                      <button
-                        style={{ marginLeft: 8 }}
-                        onClick={() => handleClearRow(idx, rIdx)}
-                        title="Очистить подход"
-                      >
-                        🧹
-                      </button>
-                      <button
-                        style={{ marginLeft: 8 }}
-                        onClick={() => handleClearSecondColumn(idx, rIdx)}
-                        title="Очистить вторую колонку"
-                      >
-                        🧽
-                      </button>
-                      <button
-                        style={{ marginLeft: 8 }}
-                        onClick={() => handleRemoveRow(idx, rIdx)}
-                        title="Удалить подход"
-                      >
-                        ×
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <button style={{ marginTop: 8 }} onClick={() => handleAddRow(idx)}>
-            + Add set
-          </button>
-          <div style={{ marginTop: 8 }}>
-            <button onClick={() => handleShowAddExercise(idx)}>
-              + Add exercise
-            </button>
-          </div>
+      {tmd.title && (
+        <div style={editorStyles.workoutTitleCard}>
+          <span style={editorStyles.overline}>Тренировка</span>
+          <h2 style={editorStyles.workoutTitle}>{tmd.title}</h2>
         </div>
+      )}
+      {tmd.exercises.map((ex, idx) => (
+        <section key={idx} style={editorStyles.exerciseCard}>
+          <div style={editorStyles.exerciseHeader}>
+            <div style={editorStyles.exerciseTitleRow}>
+              <span style={editorStyles.exerciseBadge}>{idx + 1}</span>
+              <h3 style={editorStyles.exerciseName}>{ex.name}</h3>
+            </div>
+            <div style={editorStyles.headerActions}>
+              <EditorButton
+                compact
+                title="Редактировать название"
+                variant="ghost"
+                onClick={() => handleEditExercise(idx, ex.name)}
+              >
+                ✎
+              </EditorButton>
+              <EditorButton
+                compact
+                title="Удалить упражнение"
+                variant="danger"
+                onClick={() => handleDeleteExercise(idx)}
+              >
+                ×
+              </EditorButton>
+            </div>
+          </div>
+          {ex.note && <div style={editorStyles.note}>{ex.note}</div>}
+          <div style={editorStyles.tableWrap}>
+            <table style={editorStyles.table}>
+              <tbody>
+                {ex.table.map((row, rIdx) => (
+                  <tr key={rIdx}>
+                    {row.map((cell, cIdx) => (
+                      <td
+                        key={cIdx}
+                        style={rIdx === 0 ? editorStyles.tableHeaderCell : editorStyles.tableCell}
+                      >
+                        {rIdx === 0 ? (
+                          cell
+                        ) : (
+                          <input
+                            type="text"
+                            value={cell}
+                            onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
+                            style={editorStyles.tableInput}
+                          />
+                        )}
+                      </td>
+                    ))}
+                    {rIdx !== 0 && (
+                      <td style={editorStyles.rowActionsCell}>
+                        <div style={editorStyles.rowActions}>
+                          {rIdx > 1 && (
+                            <EditorButton
+                              compact
+                              onClick={() => handleCopyPreviousRow(idx, rIdx)}
+                              title="Скопировать предыдущую строку"
+                              variant="ghost"
+                            >
+                              📋
+                            </EditorButton>
+                          )}
+                          <EditorButton
+                            compact
+                            onClick={() => handleClearRow(idx, rIdx)}
+                            title="Очистить подход"
+                            variant="ghost"
+                          >
+                            🧹
+                          </EditorButton>
+                          <EditorButton
+                            compact
+                            onClick={() => handleClearSecondColumn(idx, rIdx)}
+                            title="Очистить вторую колонку"
+                            variant="ghost"
+                          >
+                            🧽
+                          </EditorButton>
+                          <EditorButton
+                            compact
+                            onClick={() => handleRemoveRow(idx, rIdx)}
+                            title="Удалить подход"
+                            variant="danger"
+                          >
+                            ×
+                          </EditorButton>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={editorStyles.exerciseFooter}>
+            <EditorButton variant="primary" onClick={() => handleAddRow(idx)}>
+              + Добавить подход
+            </EditorButton>
+            <EditorButton onClick={() => handleShowAddExercise(idx)}>
+              + Добавить упражнение
+            </EditorButton>
+          </div>
+        </section>
       ))}
       {showDialog && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 300 }}>
-            <div style={{ marginBottom: 12 }}>Exercise name:</div>
-            <input
-              type="text"
-              value={newExerciseName}
-              onChange={e => setNewExerciseName(e.target.value)}
-              style={{ width: "100%", marginBottom: 12 }}
-              autoFocus
-            />
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={() => setShowDialog(false)}>Cancel</button>
-              <button onClick={handleAddExercise} disabled={!newExerciseName.trim()}>
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
+        <EditorModal
+          title="Новое упражнение"
+          actions={(
+            <>
+              <EditorButton onClick={() => setShowDialog(false)}>Отмена</EditorButton>
+              <EditorButton
+                disabled={!newExerciseName.trim()}
+                onClick={handleAddExercise}
+                variant="primary"
+              >
+                Добавить
+              </EditorButton>
+            </>
+          )}
+        >
+          <input
+            type="text"
+            value={newExerciseName}
+            onChange={e => setNewExerciseName(e.target.value)}
+            style={editorStyles.modalInput}
+            placeholder="Название упражнения"
+            autoFocus
+          />
+        </EditorModal>
       )}
       {showDeleteDialog && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 300 }}>
-            <div style={{ marginBottom: 16 }}>Delete exercise?</div>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={cancelDeleteExercise}>No</button>
-              <button style={{ color: 'red' }} onClick={confirmDeleteExercise}>Yes</button>
-            </div>
-          </div>
-        </div>
+        <EditorModal
+          title="Удалить упражнение?"
+          actions={(
+            <>
+              <EditorButton onClick={cancelDeleteExercise}>Нет</EditorButton>
+              <EditorButton onClick={confirmDeleteExercise} variant="danger">
+                Да, удалить
+              </EditorButton>
+            </>
+          )}
+        />
       )}
       {showEditDialog && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 300 }}>
-            <div style={{ marginBottom: 12 }}>New exercise name:</div>
-            <input
-              type="text"
-              value={editName}
-              onChange={e => setEditName(e.target.value)}
-              style={{ width: "100%", marginBottom: 12 }}
-              autoFocus
-            />
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={cancelEditExercise}>Cancel</button>
-              <button onClick={confirmEditExercise} disabled={!editName.trim()}>Save</button>
-            </div>
-          </div>
-        </div>
+        <EditorModal
+          title="Переименовать упражнение"
+          actions={(
+            <>
+              <EditorButton onClick={cancelEditExercise}>Отмена</EditorButton>
+              <EditorButton
+                disabled={!editName.trim()}
+                onClick={confirmEditExercise}
+                variant="primary"
+              >
+                Сохранить
+              </EditorButton>
+            </>
+          )}
+        >
+          <input
+            type="text"
+            value={editName}
+            onChange={e => setEditName(e.target.value)}
+            style={editorStyles.modalInput}
+            placeholder="Название упражнения"
+            autoFocus
+          />
+        </EditorModal>
       )}
-      {/* File name edit dialog */}
       {showFileNameDialog && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", padding: 24, borderRadius: 8, minWidth: 320 }}>
-            <div style={{ marginBottom: 12 }}>New file name:</div>
-            <input
-              type="text"
-              value={fileNameInput}
-              onChange={e => { setFileNameInput(e.target.value); setFileNameError(""); }}
-              style={{ width: "100%", marginBottom: 12 }}
-              autoFocus
-            />
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              <button type="button" onClick={handleFileNameDate}>{getCurrentDateStr()}</button>
-              <button type="button" onClick={() => handleFileNameEmoji('л')}>л</button>
-              <button type="button" onClick={() => handleFileNameEmoji('т')}>т</button>
-              <button type="button" onClick={() => handleFileNameEmoji('🎒')}>🎒</button>
-              <button type="button" onClick={() => handleFileNameEmoji('🦵🏼')}>🦵🏼</button>
-              <button type="button" onClick={() => handleFileNameEmoji('➡️')}>➡️</button>
-            </div>
-            {fileNameError && <div style={{ color: 'red', marginBottom: 8 }}>{fileNameError}</div>}
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button onClick={handleFileNameCancel}>Cancel</button>
-              <button onClick={handleFileNameSave} disabled={!fileNameInput.trim()}>Save</button>
-            </div>
+        <EditorModal
+          title="Переименовать файл"
+          actions={(
+            <>
+              <EditorButton onClick={handleFileNameCancel}>Отмена</EditorButton>
+              <EditorButton
+                disabled={!fileNameInput.trim()}
+                onClick={handleFileNameSave}
+                variant="primary"
+              >
+                Сохранить
+              </EditorButton>
+            </>
+          )}
+        >
+          <input
+            type="text"
+            value={fileNameInput}
+            onChange={e => { setFileNameInput(e.target.value); setFileNameError(""); }}
+            style={editorStyles.modalInput}
+            placeholder="Имя файла"
+            autoFocus
+          />
+          <div style={editorStyles.quickActions}>
+            <EditorButton type="button" onClick={handleFileNameDate}>
+              {getCurrentDateStr()}
+            </EditorButton>
+            <EditorButton type="button" compact onClick={() => handleFileNameEmoji('л')}>
+              л
+            </EditorButton>
+            <EditorButton type="button" compact onClick={() => handleFileNameEmoji('т')}>
+              т
+            </EditorButton>
+            <EditorButton type="button" compact onClick={() => handleFileNameEmoji('🎒')}>
+              🎒
+            </EditorButton>
+            <EditorButton type="button" compact onClick={() => handleFileNameEmoji('🦵🏼')}>
+              🦵🏼
+            </EditorButton>
+            <EditorButton type="button" compact onClick={() => handleFileNameEmoji('➡️')}>
+              ➡️
+            </EditorButton>
           </div>
-        </div>
+          {fileNameError && <div style={editorStyles.error}>{fileNameError}</div>}
+        </EditorModal>
       )}
     </div>
   );
