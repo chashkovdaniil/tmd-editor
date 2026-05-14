@@ -7,6 +7,7 @@ interface TmdEditorProps {
   refTmd?: (tmd: TmdFile) => void;
   file?: TFile | null;
   app?: App;
+  showQuotes?: boolean;
 }
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "dashed";
@@ -421,7 +422,7 @@ function pickRandom<T>(arr: T[]): T | undefined {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, file, app }) => {
+export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, file, app, showQuotes = true }) => {
   const [tmd, setTmd] = React.useState<TmdFile>(initialTmd);
   const [dirty, setDirty] = React.useState(false);
   const [quote, setQuote] = React.useState<string | null>(null);
@@ -504,7 +505,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
 
   // Загрузка случайной цитаты из vault при монтировании
   React.useEffect(() => {
-    if (!app) return;
+    if (!app || !showQuotes) return;
     const abstractFile = app.vault.getAbstractFileByPath(QUOTES_FILE_PATH);
     if (!(abstractFile instanceof TFile)) {
       console.log("[TMD] TmdEditor: файл цитат не найден", QUOTES_FILE_PATH);
@@ -524,7 +525,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       console.error("[TMD] TmdEditor: ошибка чтения файла цитат", err);
       setQuoteError(true);
     });
-  }, [app]);
+  }, [app, showQuotes]);
 
   // Автосохранение только если были реальные изменения
   React.useEffect(() => {
@@ -720,12 +721,12 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
           </EditorButton>
         </div>
       )}
-      {quoteError && (
+      {showQuotes && quoteError && (
         <div style={editorStyles.quoteError}>
           Не удалось загрузить цитату
         </div>
       )}
-      {!quoteError && quote && (
+      {showQuotes && !quoteError && quote && (
         <div style={editorStyles.quoteCard}>
           <p style={editorStyles.quoteText}>{quote}</p>
         </div>
