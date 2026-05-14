@@ -143,10 +143,10 @@ const editorStyles: Record<string, React.CSSProperties> = {
   },
   setNumberCell: {
     width: 1,
-    padding: "8px 6px",
+    padding: "8px 10px",
     borderBottom: "1px solid var(--background-modifier-border)",
     color: "var(--text-muted)",
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 700,
     textAlign: "center",
     verticalAlign: "middle",
@@ -736,25 +736,31 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                     return (
                       <tr key={rIdx}>
                         <td style={setNumberCellStyle}>
-                          {rIdx === 0 ? "Под." : rIdx}
+                          {rIdx === 0 ? "#" : rIdx}
                         </td>
-                        {row.map((cell, cIdx) => (
-                          <td
-                            key={cIdx}
-                            style={cellStyle}
-                          >
-                            {rIdx === 0 ? (
-                              cell
-                            ) : (
-                              <input
-                                type="text"
-                                value={cell}
-                                onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
-                                style={editorStyles.tableInput}
-                              />
-                            )}
-                          </td>
-                        ))}
+                        {row.map((cell, cIdx) => {
+                          const isRepsCol = ex.table[0]?.[cIdx] === "Повторы";
+                          const colCellStyle = isRepsCol
+                            ? { ...cellStyle, width: 70 }
+                            : cellStyle;
+                          return (
+                            <td
+                              key={cIdx}
+                              style={colCellStyle}
+                            >
+                              {rIdx === 0 ? (
+                                cell === "Повторы" ? "Пов." : cell
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={cell}
+                                  onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
+                                  style={editorStyles.tableInput}
+                                />
+                              )}
+                            </td>
+                          );
+                        })}
                         {rIdx !== 0 && (
                           <td style={actionsCellStyle}>
                             <div style={editorStyles.rowActions}>
