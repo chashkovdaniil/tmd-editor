@@ -5,10 +5,12 @@ import { TmdView, TMD_VIEW_TYPE } from "./TmdView";
 
 interface TmdSettings {
   showAutoSaveNotification: boolean;
+  showQuotes: boolean;
 }
 
 const DEFAULT_SETTINGS: TmdSettings = {
-  showAutoSaveNotification: true
+  showAutoSaveNotification: true,
+  showQuotes: true,
 };
 
 export default class TmdPlugin extends Plugin {
@@ -137,6 +139,16 @@ class TmdSettingTab extends PluginSettingTab {
         .setValue(this.plugin.settings.showAutoSaveNotification)
         .onChange(async (value) => {
           this.plugin.settings.showAutoSaveNotification = value;
+          await this.plugin.saveSettings();
+        }));
+
+    new Setting(containerEl)
+      .setName("Показ цитат")
+      .setDesc("Показывать случайную цитату из файла 'Работа над собой 🥃/Цитаты.md' в начале редактора")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.showQuotes)
+        .onChange(async (value) => {
+          this.plugin.settings.showQuotes = value;
           await this.plugin.saveSettings();
         }));
   }

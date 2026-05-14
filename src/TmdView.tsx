@@ -65,7 +65,13 @@ export class TmdView extends FileView {
       }
     };
     ReactDOM.render(
-      <TmdEditor tmd={this.tmdFile} refTmd={refTmd} file={this.file} app={this.app} />,
+      <TmdEditor
+        tmd={this.tmdFile}
+        refTmd={refTmd}
+        file={this.file}
+        app={this.app}
+        showQuotes={this.plugin.settings.showQuotes}
+      />,
       this.containerEl.children[1]
     );
     console.log("[TMD] TmdView: React-компонент отрендерен");
