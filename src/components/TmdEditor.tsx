@@ -236,6 +236,30 @@ const editorStyles: Record<string, React.CSSProperties> = {
     marginBottom: 10,
     color: "var(--text-error)",
   },
+  quoteCard: {
+    marginBottom: 12,
+    padding: "14px 18px",
+    border: "1px solid var(--background-modifier-border)",
+    borderLeft: "3px solid var(--interactive-accent)",
+    borderRadius: 12,
+    background: "var(--background-secondary)",
+  },
+  quoteText: {
+    margin: 0,
+    color: "var(--text-muted)",
+    fontSize: 14,
+    fontStyle: "italic",
+    lineHeight: 1.5,
+  },
+  quoteError: {
+    marginBottom: 12,
+    padding: "10px 14px",
+    border: "1px solid var(--background-modifier-border)",
+    borderRadius: 10,
+    background: "var(--background-secondary)",
+    color: "var(--text-error)",
+    fontSize: 13,
+  },
 };
 
 const buttonBaseStyle: React.CSSProperties = {
@@ -382,9 +406,26 @@ const EditorModal: React.FC<EditorModalProps> = ({ actions, children, title }) =
   </div>
 );
 
+const QUOTES_FILE_PATH = "Работа над собой 🥃/Цитаты.md";
+
+function parseQuotes(content: string): string[] {
+  return content
+    .split(/\r?\n/)
+    .map(line => line.match(/^\d+\.\s+(.+)$/))
+    .filter((m): m is RegExpMatchArray => m !== null)
+    .map(m => m[1].trim());
+}
+
+function pickRandom<T>(arr: T[]): T | undefined {
+  if (arr.length === 0) return undefined;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, file, app }) => {
   const [tmd, setTmd] = React.useState<TmdFile>(initialTmd);
   const [dirty, setDirty] = React.useState(false);
+  const [quote, setQuote] = React.useState<string | null>(null);
+  const [quoteError, setQuoteError] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
   const [newExerciseName, setNewExerciseName] = React.useState("");
   const [addAfterIdx, setAddAfterIdx] = React.useState<number | null>(null);
@@ -460,6 +501,30 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     setTmd(initialTmd);
     setDirty(false);
   }, [initialTmd]);
+
+  // Загрузка случайной цитаты из vault при монтировании
+  React.useEffect(() => {
+    if (!app) return;
+    const abstractFile = app.vault.getAbstractFileByPath(QUOTES_FILE_PATH);
+    if (!(abstractFile instanceof TFile)) {
+      console.log("[TMD] TmdEditor: файл цитат не найден", QUOTES_FILE_PATH);
+      setQuoteError(true);
+      return;
+    }
+    app.vault.cachedRead(abstractFile).then(content => {
+      const quotes = parseQuotes(content);
+      const picked = pickRandom(quotes);
+      if (picked) {
+        setQuote(picked);
+        setQuoteError(false);
+      } else {
+        setQuoteError(true);
+      }
+    }).catch(err => {
+      console.error("[TMD] TmdEditor: ошибка чтения файла цитат", err);
+      setQuoteError(true);
+    });
+  }, [app]);
 
   // Автосохранение только если были реальные изменения
   React.useEffect(() => {
@@ -653,6 +718,16 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
           >
             Переименовать
           </EditorButton>
+        </div>
+      )}
+      {quoteError && (
+        <div style={editorStyles.quoteError}>
+          Не удалось загрузить цитату
+        </div>
+      )}
+      {!quoteError && quote && (
+        <div style={editorStyles.quoteCard}>
+          <p style={editorStyles.quoteText}>{quote}</p>
         </div>
       )}
       {tmd.title && (
