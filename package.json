@@ -1,6 +1,6 @@
 {
   "name": "tmd-editor",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "Plugin for editing .tmd workout files with React UI.",
   "main": "dist/main.js",
   "scripts": {
