@@ -238,6 +238,9 @@ const editorStyles: Record<string, React.CSSProperties> = {
     color: "var(--text-error)",
   },
   quoteCard: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
     marginBottom: 12,
     padding: "14px 18px",
     border: "1px solid var(--background-modifier-border)",
@@ -246,6 +249,7 @@ const editorStyles: Record<string, React.CSSProperties> = {
     background: "var(--background-secondary)",
   },
   quoteText: {
+    flex: 1,
     margin: 0,
     color: "var(--text-muted)",
     fontSize: 14,
@@ -503,8 +507,8 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
     setDirty(false);
   }, [initialTmd]);
 
-  // Загрузка случайной цитаты из vault при монтировании
-  React.useEffect(() => {
+  // Загрузка случайной цитаты из vault
+  const loadQuote = React.useCallback(() => {
     if (!app || !showQuotes) return;
     const abstractFile = app.vault.getAbstractFileByPath(QUOTES_FILE_PATH);
     if (!(abstractFile instanceof TFile)) {
@@ -526,6 +530,10 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       setQuoteError(true);
     });
   }, [app, showQuotes]);
+
+  React.useEffect(() => {
+    loadQuote();
+  }, [loadQuote]);
 
   // Автосохранение только если были реальные изменения
   React.useEffect(() => {
@@ -729,6 +737,9 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
       {showQuotes && !quoteError && quote && (
         <div style={editorStyles.quoteCard}>
           <p style={editorStyles.quoteText}>{quote}</p>
+          <EditorButton compact variant="ghost" title="Обновить цитату" onClick={loadQuote}>
+            <ObsidianIcon icon="refresh-cw" />
+          </EditorButton>
         </div>
       )}
       {tmd.title && (
