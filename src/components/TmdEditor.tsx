@@ -332,56 +332,33 @@ const ObsidianIcon: React.FC<ObsidianIconProps> = ({ icon }) => {
   return <span ref={iconRef} aria-hidden="true" />;
 };
 
-let addSetStylesInjected = false;
-
-function injectAddSetStyles() {
-  if (addSetStylesInjected) return;
-  addSetStylesInjected = true;
-  const style = document.createElement("style");
-  style.textContent = `
-    @keyframes tmd-add-set-light {
-      0%   { transform: translateY(0);    box-shadow: none; }
-      35%  { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.18); }
-      100% { transform: translateY(0);    box-shadow: none; }
-    }
-    @keyframes tmd-add-set-dark {
-      0%   { transform: translateY(0);    box-shadow: none;                          filter: brightness(1); }
-      35%  { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,0.55); filter: brightness(1.18); }
-      100% { transform: translateY(0);    box-shadow: none;                          filter: brightness(1); }
-    }
-    .theme-light .tmd-add-set-anim { animation: tmd-add-set-light 0.38s ease-out; }
-    .theme-dark  .tmd-add-set-anim { animation: tmd-add-set-dark  0.38s ease-out; }
-  `;
-  document.head.appendChild(style);
-}
-
 interface AddSetButtonProps {
   onClick: () => void;
 }
 
 const AddSetButton: React.FC<AddSetButtonProps> = ({ onClick }) => {
-  const [anim, setAnim] = React.useState(false);
+  const [pressed, setPressed] = React.useState(false);
 
-  React.useEffect(() => {
-    injectAddSetStyles();
-  }, []);
-
-  const handleClick = () => {
-    onClick();
-    setAnim(false);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setAnim(true);
-        setTimeout(() => setAnim(false), 420);
-      });
-    });
-  };
+  const pressedStyle: React.CSSProperties = pressed
+    ? {
+        transform: "scale(1.045)",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.25)",
+        filter: "brightness(1.08)",
+      }
+    : {};
 
   return (
     <EditorButton
-      className={anim ? "tmd-add-set-anim" : undefined}
-      onClick={handleClick}
-      style={{ width: "100%" }}
+      onClick={onClick}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
+      style={{
+        width: "100%",
+        transition: "transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease",
+        ...pressedStyle,
+      }}
       variant="primary"
     >
       + Подход
