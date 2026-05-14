@@ -738,23 +738,29 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                         <td style={setNumberCellStyle}>
                           {rIdx === 0 ? "#" : rIdx}
                         </td>
-                        {row.map((cell, cIdx) => (
-                          <td
-                            key={cIdx}
-                            style={cellStyle}
-                          >
-                            {rIdx === 0 ? (
-                              cell
-                            ) : (
-                              <input
-                                type="text"
-                                value={cell}
-                                onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
-                                style={editorStyles.tableInput}
-                              />
-                            )}
-                          </td>
-                        ))}
+                        {row.map((cell, cIdx) => {
+                          const isRepsCol = ex.table[0]?.[cIdx] === "Повторы";
+                          const colCellStyle = isRepsCol
+                            ? { ...cellStyle, width: 70 }
+                            : cellStyle;
+                          return (
+                            <td
+                              key={cIdx}
+                              style={colCellStyle}
+                            >
+                              {rIdx === 0 ? (
+                                cell === "Повторы" ? "Пов." : cell
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={cell}
+                                  onChange={e => handleCellChange(idx, rIdx, cIdx, e.target.value)}
+                                  style={editorStyles.tableInput}
+                                />
+                              )}
+                            </td>
+                          );
+                        })}
                         {rIdx !== 0 && (
                           <td style={actionsCellStyle}>
                             <div style={editorStyles.rowActions}>
