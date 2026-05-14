@@ -143,10 +143,10 @@ const editorStyles: Record<string, React.CSSProperties> = {
   },
   setNumberCell: {
     width: 1,
-    padding: "8px 10px",
+    padding: "8px 6px",
     borderBottom: "1px solid var(--background-modifier-border)",
     color: "var(--text-muted)",
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 700,
     textAlign: "center",
     verticalAlign: "middle",
@@ -736,7 +736,7 @@ export const TmdEditor: React.FC<TmdEditorProps> = ({ tmd: initialTmd, refTmd, f
                     return (
                       <tr key={rIdx}>
                         <td style={setNumberCellStyle}>
-                          {rIdx === 0 ? "#" : rIdx}
+                          {rIdx === 0 ? "Под." : rIdx}
                         </td>
                         {row.map((cell, cIdx) => (
                           <td
